@@ -633,6 +633,32 @@ a:focus {
 
 /* end footer section*/
 
+/*----------------------------------------------------------
+
+#Quotes
+
+*/
+
+.blockquotes{
+  border-left: 4px solid #ccc;
+  margin: 20px 0;
+  padding: 10px 20px;
+  background-color: #f9f9f9;
+}
+
+.author-name{
+  display: block;
+  margin-top: 10px;
+  font-style: italic;
+  color: #555;
+}
+
+.quotes-div{
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 20px;
+}
+
 /*--------------------------------------------------------------
 # Portfolio
 --------------------------------------------------------------*/
