@@ -104,7 +104,7 @@
                         Explore the diverse world of technology, gaming, vlogging, and teaching through my eyes. I am a passionate coder and content creator from Calicut, Adivaram, with a love for learning and exploring new things. Dive into my YouTube channel, 'Multi Visuals,' to discover engaging content on tech, gaming, and more. Join me on my journey to enhance skills and share knowledge with the world.
                       </p>
                       <div class="btn-box">
-                        <a href="contact.html" class="btn-1">
+                        <a href="#contact-section" class="btn-1">
                           Contact Us
                         </a>
                       </div>
@@ -130,7 +130,7 @@
                         Scroll down to more about me...
                       </p>
                       <div class="btn-box">
-                        <a href="contact.html" class="btn-1">
+                        <a href="#contact-section" class="btn-1">
                           Contact Us
                         </a>
                       </div>
@@ -379,14 +379,24 @@
         <div class="row">
           <div class="col-md-6">
             <div class="contact_form ">
-              <form action="" id="submit-form">
-                <input type="text" placeholder="Name " name="Name" required>
-                <input type="email" placeholder="Email" name="Email" required>
-                <input type="text" placeholder="Message" class="message_input" name="Message" required>
-                <button>
-                  Send
+              <form action="https://api.web3forms.com/submit" id="submit-form" method="post">
+                <input type="hidden" name="access_key" value="a3b9cee4-a032-4b3c-8bc2-3974e648dc8e">
+
+                <input type="text" placeholder="Name" name="Name" id="name" required>
+                <span id="nameError" class="error"></span><br><br>
+        
+                <input type="email" placeholder="Email" name="Email" id="email" required>
+                <span id="emailError" class="error"></span><br><br>
+        
+                <input type="text" placeholder="Message" class="message_input" id="message" name="Message" required>
+                <span id="messageError" class="error"></span><br><br>
+        
+                <button type="submit" id="send-btn">
+                    <span id="re">Send</span>
                 </button>
-              </form>
+
+                <div id="result"></div>
+            </form>
             </div>
           </div>
           <div class="col-md-6">
@@ -444,26 +454,79 @@
   <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.js"></script>
 
-  <script>
-    $("#submit-form").submit((e)=>{
-        e.preventDefault()
-        $.ajax({
-            url:"https://script.google.com/macros/s/AKfycbwlvlChOHLpXEtNu1LAOZzXgXn_ERFsnurDPxGs635YKsYSWWfYA8KrHtu6uKdk5a1sYw/exec",
-            data:$("#submit-form").serialize(),
-            method:"post",
-            success:function (response){
-                
-                alert("Form submitted successfully")
-                window.location.reload()
-                //window.location.href="https://google.com"
-            },
-            error:function (err){
-                alert("Something Error")
+ <script>
+    const form = document.getElementById('submit-form');
+    const result = document.getElementById('result');
+    
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
 
-            }
-        })
-    })
-</script>
+      const form = e.target;
+      const formData = new FormData(form);
+
+      
+    
+    // Check for form validity
+    if (!form.checkValidity()) {
+     result.innerHTML = "Please fill out all required fields correctly!";
+     return;
+     
+    }
+    
+    const name = form.querySelector('#name').value.trim();
+    const email = form.querySelector('#email').value.trim();
+    const message = form.querySelector('#message').value.trim();
+   
+   
+    if (!name.match(/^[A-Za-z ]+$/)) {
+        result.innerHTML = 'Name should contain only letters and spaces.';
+        return;
+    }
+   
+    if (!email.match(/^([a-zA-Z0-9_]+)@([a-zA-Z0-9]+)\.([a-zA-Z]+)(.[a-zA-Z]+)?$/)) {
+           result.innerHTML = "Email should be correctly entered";
+           return;
+       }
+       if (message.length < 10) {
+           result.innerHTML = "Message should be at least 10 characters long.";
+           return;
+       }
+
+
+      const object = Object.fromEntries(formData);
+      const json = JSON.stringify(object);
+
+      result.innerHTML = "Please wait..."
+    
+        fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: json
+            })
+            .then(async (response) => {
+                let json = await response.json();
+                if (response.status == 200) {
+                    result.innerHTML = "Form submitted successfully";
+                } else {
+                    console.log(response);
+                    result.innerHTML = json.message;
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                result.innerHTML = "Something went wrong!";
+            })
+            .then(function() {
+                form.reset();
+                setTimeout(() => {
+                    result.style.display = "none";
+                }, 3000);
+            });
+    });
+    </script>
 
 </body>
 
